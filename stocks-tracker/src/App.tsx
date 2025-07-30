@@ -3,7 +3,6 @@ import {PlusCircle, Trash2, TrendingUp, TrendingDown, DollarSign, Calendar, BarC
 import {LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart as RechartsPieChart, Cell, AreaChart, Area, Pie} from 'recharts';
 
 import './App.css';
-import './index.css';
 
 const InvestmentDashboard = () => {
   const [activeTab, setActiveTab] = useState('portfolio');
