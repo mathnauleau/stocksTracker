@@ -45,3 +45,11 @@ In the terminal, run:
 ```bash
 npm run dev
 ```
+
+### 5. Relink all dependencies
+
+In the terminal, run:
+
+```bash
+npm install dev
+```
