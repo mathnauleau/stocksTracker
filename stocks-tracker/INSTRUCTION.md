@@ -53,3 +53,11 @@ In the terminal, run:
 ```bash
 npm install dev
 ```
+
+
+
+### Plugins
+[ES7+](https://marketplace.visualstudio.com/items?itemName=dsznajder.es7-react-js-snippets)
+rafce
+
+[React Developer Tool for Chrome](https://chromewebstore.google.com/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi)

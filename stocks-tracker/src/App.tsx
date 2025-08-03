@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import {PlusCircle, Trash2, TrendingUp, TrendingDown, DollarSign, Calendar, BarChart3, PieChart, Gift} from 'lucide-react';
-import {LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart as RechartsPieChart, Cell, AreaChart, Area, Pie} from 'recharts';
+import {PlusCircle, Trash2, TrendingUp, TrendingDown, DollarSign, Calendar, BarChart3, Gift} from 'lucide-react';
+import {XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart as RechartsPieChart, Cell, AreaChart, Area, Pie} from 'recharts';
+
+import Button from './components/button.tsx';
 
 import './App.css';
 
@@ -360,6 +362,7 @@ function App() {
                 </button>
               );
             })}
+            <Button />
           </nav>
         </div>
 
