@@ -308,7 +308,7 @@ const InvestmentDashboard = () => {
 
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-50 p-6 borderRadius-lg">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold text-gray-900 mb-8 flex items-center gap-3">
           <BarChart3 className="text-blue-600" />
@@ -327,21 +327,16 @@ const InvestmentDashboard = () => {
             ].map(tab => {
               const Icon = tab.icon;
               return (
-                <button
+                <Button
                   key={tab.id}
+                  variant={activeTab === tab.id ? 'primary' : 'secondary'}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center gap-2 px-4 py-2 font-medium rounded-lg transition-colors ${
-                    activeTab === tab.id
-                      ? 'bg-blue-600 text-white'
-                      : 'text-gray-600 hover:text-blue-600 hover:bg-blue-50'
-                  }`}
+                  icon={Icon}
                 >
-                  <Icon size={18} />
                   {tab.label}
-                </button>
+                </Button>
               );
             })}
-            <Button />
           </nav>
         </div>
 
@@ -607,7 +602,7 @@ const InvestmentDashboard = () => {
                 onClick={addTransaction}
                 className="mt-4 flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
-                <PlusCircle size={18} />
+                <PlusCircle size={16} />
                 Add Transaction
               </button>
             </div>
@@ -720,7 +715,7 @@ const InvestmentDashboard = () => {
                 onClick={addDividend}
                 className="mt-4 flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-green-700 transition-colors"
               >
-                <PlusCircle size={18} />
+                <PlusCircle size={16} />
                 Add Dividend
               </button>
             </div>
@@ -904,7 +899,7 @@ const InvestmentDashboard = () => {
                 onClick={addDcaPlan}
                 className="mt-4 flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
               >
-                <PlusCircle size={18} />
+                <PlusCircle size={16} />
                 Add DCA Plan
               </button>
             </div>
