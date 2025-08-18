@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { PlusCircle, FileUp, FileDown, Trash2, TrendingUp, TrendingDown, DollarSign, Calendar, BarChart3, Gift } from 'lucide-react';
+import { TrendingUp, DollarSign, Calendar, BarChart3, Gift } from 'lucide-react';
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart as RechartsPieChart, Cell, AreaChart, Area, Pie } from 'recharts';
 
 import PortfolioPage from './pages/PortfolioPage';
