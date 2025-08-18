@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {PlusCircle, Trash2, TrendingUp, TrendingDown, DollarSign, Calendar, BarChart3, Gift} from 'lucide-react';
+import {PlusCircle, FileUp, FileDown, Trash2, TrendingUp, TrendingDown, DollarSign, Calendar, BarChart3, Gift} from 'lucide-react';
 import {XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart as RechartsPieChart, Cell, AreaChart, Area, Pie} from 'recharts';
 
 import Button from './components/button.tsx';
@@ -160,6 +160,41 @@ const InvestmentDashboard = () => {
       date: new Date().toISOString().split('T')[0],
       fees: ''
     });
+  };
+
+  // Export transactions data
+    const exportData = () => {
+    const data = {
+      transactions
+    };
+    const dataStr = JSON.stringify(data, null, 2);
+    const dataBlob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(dataBlob);
+    
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `investment_data_${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
+   // Import transaction 
+    const importData = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const data = JSON.parse(e.target.result);
+          if (data.transactions) setTransactions(data.transactions);
+        } catch (error) {
+          alert('Error importing data. Please check the file format.');
+        }
+      };
+      reader.readAsText(file);
+    }
   };
 
   // Add DCA plan
@@ -473,7 +508,7 @@ const InvestmentDashboard = () => {
             {/* Performance Charts */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Portfolio Allocation Pie Chart */}
-              <div className="bg-white p-6 rounded-xl shadow-sm border">
+              <div className="bg-white p-6 rounded-xl">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Portfolio Allocation</h3>
                 <ResponsiveContainer width="100%" height={300}>
                   <RechartsPieChart>
@@ -495,7 +530,7 @@ const InvestmentDashboard = () => {
               </div>
 
               {/* Performance Timeline */}
-              <div className="bg-white p-6 rounded-xl shadow-sm border">
+              <div className="bg-white p-6 rounded-xl">
                 <h3 className="text-lg font-semibold text-gray-900 mb-4">Investment Timeline</h3>
                 <ResponsiveContainer width="100%" height={300}>
                   <AreaChart data={timelineData}>
@@ -512,7 +547,7 @@ const InvestmentDashboard = () => {
 
             {/* Performance Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-white p-6 rounded-xl shadow-sm border">
+              <div className="bg-white p-6 rounded-xl">
                 <h4 className="text-sm font-medium text-gray-600 mb-2">Total Return</h4>
                 <p className={`text-2xl font-bold ${performanceData.totalReturn >= 0 ? 'text-green-600' : 'text-red-600'}`}>
                   €{performanceData.totalReturn.toFixed(2)}
@@ -520,7 +555,7 @@ const InvestmentDashboard = () => {
                 <p className="text-sm text-gray-500">Including dividends</p>
               </div>
               
-              <div className="bg-white p-6 rounded-xl shadow-sm border">
+              <div className="bg-white p-6 rounded-xl">
                 <h4 className="text-sm font-medium text-gray-600 mb-2">Best Performer</h4>
                 {portfolio.length > 0 && (
                   <>
@@ -534,7 +569,7 @@ const InvestmentDashboard = () => {
                 )}
               </div>
               
-              <div className="bg-white p-6 rounded-xl shadow-sm border">
+              <div className="bg-white p-6 rounded-xl">
                 <h4 className="text-sm font-medium text-gray-600 mb-2">Dividend Yield</h4>
                 <p className="text-2xl font-bold text-blue-600">
                   {performanceData.totalInvested > 0 ? ((performanceData.totalDividends / performanceData.totalInvested) * 100).toFixed(2) : 0}%
@@ -549,7 +584,7 @@ const InvestmentDashboard = () => {
         {activeTab === 'transactions' && (
           <div className="space-y-6">
             {/* Add Transaction Form */}
-            <div className="bg-white p-6 rounded-xl shadow-sm border">
+            <div className="bg-white p-6 rounded-xl">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Add New Transaction</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <input
@@ -670,6 +705,28 @@ const InvestmentDashboard = () => {
                 </table>
               </div>
             </div>
+
+            <div className='mt-6 flex justify-end gap-4'>
+                <button
+                  onClick={exportData}
+                  className="mt-4 flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors cursor-pointer"
+                >
+                  <FileUp size={16} />
+                  Export Transactions
+                </button>
+
+                <button
+                  type="file"
+                  accept=".json"
+                  onChange={importData}
+                  className="hidden"
+                  className="mt-4 flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors cursor-pointer"
+                >
+                  <FileDown size={16} />
+                  Import Transactions
+                </button>
+            </div>
+
           </div>
         )}
 
@@ -677,7 +734,7 @@ const InvestmentDashboard = () => {
         {activeTab === 'dividends' && (
           <div className="space-y-6">
             {/* Add Dividend Form */}
-            <div className="bg-white p-6 rounded-xl shadow-sm border">
+            <div className="bg-white p-6 rounded-xl">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Add Dividend Payment</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <input
@@ -722,7 +779,7 @@ const InvestmentDashboard = () => {
 
             {/* Dividend Summary */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-white p-6 rounded-xl shadow-sm border">
+              <div className="bg-white p-6 rounded-xl">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-600">Total Dividends</p>
@@ -736,7 +793,7 @@ const InvestmentDashboard = () => {
                 </div>
               </div>
               
-              <div className="bg-white p-6 rounded-xl shadow-sm border">
+              <div className="bg-white p-6 rounded-xl">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-600">This Month</p>
@@ -754,7 +811,7 @@ const InvestmentDashboard = () => {
                 </div>
               </div>
               
-              <div className="bg-white p-6 rounded-xl shadow-sm border">
+              <div className="bg-white p-6 rounded-xl">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-600">Avg Monthly</p>
@@ -824,7 +881,7 @@ const InvestmentDashboard = () => {
           <div className="space-y-6">
             {/* Budget Overview */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-white p-6 rounded-xl shadow-sm border">
+              <div className="bg-white p-6 rounded-xl">
                 <label className="block text-sm font-medium text-gray-700 mb-2">Monthly Budget</label>
                 <input
                   type="number"
@@ -834,7 +891,7 @@ const InvestmentDashboard = () => {
                 />
               </div>
               
-              <div className="bg-white p-6 rounded-xl shadow-sm border">
+              <div className="bg-white p-6 rounded-xl">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-600">Allocated</p>
@@ -848,7 +905,7 @@ const InvestmentDashboard = () => {
                 </div>
               </div>
               
-              <div className="bg-white p-6 rounded-xl shadow-sm border">
+              <div className="bg-white p-6 rounded-xl">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-600">Remaining</p>
@@ -861,7 +918,7 @@ const InvestmentDashboard = () => {
             </div>
 
             {/* Add DCA Plan Form */}
-            <div className="bg-white p-6 rounded-xl shadow-sm border">
+            <div className="bg-white p-6 rounded-xl">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Add DCA Plan</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <input
