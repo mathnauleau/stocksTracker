@@ -166,7 +166,7 @@ const InvestmentDashboard = () => {
   const timelineData = getPerformanceTimelineData();
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6 borderRadius-lg">
+    <div className="min-h-screen bg-gray-50 p-6 background">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold text-gray-900 mb-8 flex items-center gap-3">
           <BarChart3 className="text-blue-600" />
@@ -239,7 +239,7 @@ const InvestmentDashboard = () => {
           />
         )}
       </div>
-    </div>
+    </div >
   );
 };
 
