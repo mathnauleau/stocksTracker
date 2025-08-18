@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { TrendingUp, DollarSign, Calendar, BarChart3, Gift } from 'lucide-react';
-import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart as RechartsPieChart, Cell, AreaChart, Area, Pie } from 'recharts';
 
 import Button from './components/button.tsx';
 import useDataLoader from './hooks/useDataLoader';
