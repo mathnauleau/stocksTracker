@@ -167,19 +167,19 @@ const DcaPlannerPage: React.FC<DcaPlannerPageProps> = ({
                         <tbody className="divide-y divide-gray-200">
                             {dcaPlans.map(plan => (
                                 <tr key={plan.id} className="hover:bg-gray-50">
-                                    <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
+                                    <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900 text-left">
                                         {plan.symbol}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-gray-600">
+                                    <td className="px-6 py-4 whitespace-nowrap text-gray-600 text-left">
                                         €{plan.amount.toFixed(2)}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-gray-600 capitalize">
+                                    <td className="px-6 py-4 whitespace-nowrap text-gray-600 capitalize text-left">
                                         {plan.frequency}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-gray-600">
+                                    <td className="px-6 py-4 whitespace-nowrap text-gray-600 text-left">
                                         {plan.nextDate}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
+                                    <td className="px-6 py-4 whitespace-nowrap text-left">
                                         <button
                                             onClick={() => setDcaPlans(dcaPlans.filter(p => p.id !== plan.id))}
                                             className="text-red-600 hover:text-red-800"

@@ -57,7 +57,7 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({ performanceData, portfoli
             </div>
           </div>
         </div>
-        
+
         <div className="bg-white p-6 rounded-xl">
           <div className="flex items-center justify-between">
             <div>
@@ -71,7 +71,7 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({ performanceData, portfoli
             </div>
           </div>
         </div>
-        
+
         <div className="bg-white p-6 rounded-xl">
           <div className="flex items-center justify-between">
             <div>
@@ -84,8 +84,8 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({ performanceData, portfoli
               </p>
             </div>
             <div className={`p-3 rounded-full ${performanceData.totalGainLoss >= 0 ? 'bg-green-100' : 'bg-red-100'}`}>
-              {performanceData.totalGainLoss >= 0 ? 
-                <TrendingUp className="text-green-600" size={24} /> : 
+              {performanceData.totalGainLoss >= 0 ?
+                <TrendingUp className="text-green-600" size={24} /> :
                 <TrendingDown className="text-red-600" size={24} />
               }
             </div>
@@ -129,32 +129,30 @@ const PortfolioPage: React.FC<PortfolioPageProps> = ({ performanceData, portfoli
             <tbody className="divide-y divide-gray-200">
               {portfolio.map(position => (
                 <tr key={position.symbol} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
+                  <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900 text-left">
                     {position.symbol}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-gray-600">
+                  <td className="px-6 py-4 whitespace-nowrap text-gray-600 text-left">
                     {position.totalShares.toFixed(4)}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-gray-600">
+                  <td className="px-6 py-4 whitespace-nowrap text-gray-600 text-left">
                     €{position.avgCost.toFixed(2)}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-gray-600">
+                  <td className="px-6 py-4 whitespace-nowrap text-gray-600 text-left">
                     €{position.currentPrice.toFixed(2)}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-gray-600">
+                  <td className="px-6 py-4 whitespace-nowrap text-gray-600 text-left">
                     €{position.totalCost.toFixed(2)}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-gray-600">
+                  <td className="px-6 py-4 whitespace-nowrap text-gray-600 text-left">
                     €{position.currentValue.toFixed(2)}
                   </td>
-                  <td className={`px-6 py-4 whitespace-nowrap font-medium ${
-                    position.gainLoss >= 0 ? 'text-green-600' : 'text-red-600'
-                  }`}>
+                  <td className={`px-6 py-4 whitespace-nowrap font-medium text-left ${position.gainLoss >= 0 ? 'text-green-600' : 'text-red-600'
+                    }`}>
                     €{position.gainLoss.toFixed(2)}
                   </td>
-                  <td className={`px-6 py-4 whitespace-nowrap font-medium ${
-                    position.gainLossPercent >= 0 ? 'text-green-600' : 'text-red-600'
-                  }`}>
+                  <td className={`px-6 py-4 whitespace-nowrap font-medium text-left ${position.gainLossPercent >= 0 ? 'text-green-600' : 'text-red-600'
+                    }`}>
                     {position.gainLossPercent.toFixed(2)}%
                   </td>
                 </tr>

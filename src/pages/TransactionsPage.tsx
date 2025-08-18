@@ -182,33 +182,33 @@ const TransactionsPage: React.FC<TransactionsPageProps> = ({
                         <tbody className="divide-y divide-gray-200">
                             {transactions.slice().reverse().map(transaction => (
                                 <tr key={transaction.id} className="hover:bg-gray-50">
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 text-left">
                                         {transaction.date}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
+                                    <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900 text-left">
                                         {transaction.symbol}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
+                                    <td className="px-6 py-4 whitespace-nowrap text-left">
                                         <span className={`px-2 py-1 text-xs font-medium rounded-full ${transaction.type === 'BUY'
-                                                ? 'bg-green-100 text-green-800'
-                                                : 'bg-red-100 text-red-800'
+                                            ? 'bg-green-100 text-green-800'
+                                            : 'bg-red-100 text-red-800'
                                             }`}>
                                             {transaction.type}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 text-left">
                                         {transaction.shares}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 text-left">
                                         €{transaction.price.toFixed(2)}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 text-left">
                                         €{transaction.fees.toFixed(2)}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
+                                    <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900 text-left">
                                         €{transaction.total.toFixed(2)}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
+                                    <td className="px-6 py-4 whitespace-nowrap text-left">
                                         <button
                                             onClick={() => setTransactions(transactions.filter(t => t.id !== transaction.id))}
                                             className="text-red-600 hover:text-red-800"

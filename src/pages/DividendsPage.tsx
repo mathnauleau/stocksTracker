@@ -166,21 +166,21 @@ const DividendsPage: React.FC<DividendsPageProps> = ({
                         <tbody className="divide-y divide-gray-200">
                             {dividends.slice().reverse().map(dividend => (
                                 <tr key={dividend.id} className="hover:bg-gray-50">
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 text-left">
                                         {dividend.date}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
+                                    <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900 text-left">
                                         {dividend.symbol}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
+                                    <td className="px-6 py-4 whitespace-nowrap text-left">
                                         <span className="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800 capitalize">
                                             {dividend.type}
                                         </span>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap font-medium text-green-600">
+                                    <td className="px-6 py-4 whitespace-nowrap font-medium text-green-600 text-left">
                                         €{dividend.amount.toFixed(2)}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap">
+                                    <td className="px-6 py-4 whitespace-nowrap text-left">
                                         <button
                                             onClick={() => setDividends(dividends.filter(d => d.id !== dividend.id))}
                                             className="text-red-600 hover:text-red-800"
