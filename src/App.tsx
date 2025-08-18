@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { TrendingUp, DollarSign, Calendar, BarChart3, Gift } from 'lucide-react';
 
 import Button from './components/button.tsx';
@@ -14,7 +14,34 @@ import DcaPlannerPage from './pages/DcaPlannerPage';
 import './App.css';
 
 const InvestmentDashboard = () => {
-  const [activeTab, setActiveTab] = useState('portfolio');
+  // Get initial tab from URL params, fallback to 'portfolio'
+  const getInitialTab = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabFromUrl = urlParams.get('tab');
+    const validTabs = ['portfolio', 'performance', 'transactions', 'dividends', 'dca'];
+    return validTabs.includes(tabFromUrl) ? tabFromUrl : 'portfolio';
+  };
+
+  const [activeTab, setActiveTab] = useState(getInitialTab);
+
+  // Update URL when tab changes
+  const handleTabChange = (newTab) => {
+    setActiveTab(newTab);
+
+    // Update URL without page reload
+    const url = new URL(window.location);
+    url.searchParams.set('tab', newTab);
+    window.history.replaceState({}, '', url);
+  };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      setActiveTab(getInitialTab());
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
 
   // Use the data loader hook instead of hardcoded state
   const {
@@ -188,7 +215,7 @@ const InvestmentDashboard = () => {
                 <Button
                   key={tab.id}
                   variant={activeTab === tab.id ? 'primary' : 'secondary'}
-                  onClick={() => setActiveTab(tab.id)}
+                  onClick={() => handleTabChange(tab.id)}
                   icon={Icon}
                 >
                   {tab.label}
