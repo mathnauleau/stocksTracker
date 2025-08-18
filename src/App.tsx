@@ -2,114 +2,34 @@ import React, { useState } from 'react';
 import { TrendingUp, DollarSign, Calendar, BarChart3, Gift } from 'lucide-react';
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart as RechartsPieChart, Cell, AreaChart, Area, Pie } from 'recharts';
 
+import Button from './components/button.tsx';
+import useDataLoader from './hooks/useDataLoader';
+
+// Import your page components
 import PortfolioPage from './pages/PortfolioPage';
 import PerformancePage from './pages/PerformancePage';
 import TransactionsPage from './pages/TransactionsPage';
 import DividendsPage from './pages/DividendsPage';
-import DcaPlannerPage from './pages/DcaPlanner.tsx';
-
-import Button from './components/button.tsx';
+import DcaPlannerPage from './pages/DcaPlannerPage';
 
 import './App.css';
 
 const InvestmentDashboard = () => {
   const [activeTab, setActiveTab] = useState('portfolio');
-  const [monthlyBudget, setMonthlyBudget] = useState(200);
 
-  // Initialize with example data
-  const [transactions, setTransactions] = useState([
-    {
-      id: 1,
-      symbol: 'ALO',
-      type: 'BUY',
-      shares: 30,
-      price: 3.8,
-      date: '2024-11-15',
-      fees: 2.5,
-      total: 30 * 3.8 + 2.5
-    },
-    {
-      id: 2,
-      symbol: 'VWCG',
-      type: 'BUY',
-      shares: 20,
-      price: 14.8,
-      date: '2024-11-20',
-      fees: 1.5,
-      total: 20 * 14.8 + 1.5
-    },
-    {
-      id: 3,
-      symbol: 'MWRD',
-      type: 'BUY',
-      shares: 25,
-      price: 18.6,
-      date: '2024-12-05',
-      fees: 2.0,
-      total: 25 * 18.6 + 2.0
-    },
-    {
-      id: 4,
-      symbol: 'SP500',
-      type: 'BUY',
-      shares: 10,
-      price: 8.4,
-      date: '2024-12-10',
-      fees: 1.2,
-      total: 10 * 8.4 + 1.2
-    },
-    {
-      id: 5,
-      symbol: 'AD.AS',
-      type: 'BUY',
-      shares: 2,
-      price: 4.6,
-      date: '2024-12-15',
-      fees: 0.8,
-      total: 2 * 4.6 + 0.8
-    }
-  ]);
-
-  const [dcaPlans, setDcaPlans] = useState([
-    {
-      id: 1,
-      symbol: 'VWCG',
-      amount: 50,
-      frequency: 'monthly',
-      nextDate: '2025-02-01'
-    },
-    {
-      id: 2,
-      symbol: 'SP500',
-      amount: 75,
-      frequency: 'monthly',
-      nextDate: '2025-02-01'
-    },
-    {
-      id: 3,
-      symbol: 'MWRD',
-      amount: 50,
-      frequency: 'monthly',
-      nextDate: '2025-02-01'
-    }
-  ]);
-
-  const [dividends, setDividends] = useState([
-    {
-      id: 1,
-      symbol: 'ALO',
-      amount: 12.50,
-      date: '2025-01-15',
-      type: 'dividend'
-    },
-    {
-      id: 2,
-      symbol: 'VWCG',
-      amount: 8.30,
-      date: '2025-01-10',
-      type: 'dividend'
-    }
-  ]);
+  // Use the data loader hook instead of hardcoded state
+  const {
+    transactions,
+    setTransactions,
+    dcaPlans,
+    setDcaPlans,
+    dividends,
+    setDividends,
+    monthlyBudget,
+    setMonthlyBudget,
+    isLoading,
+    error
+  } = useDataLoader();
 
   // Current prices for performance calculation (simulated)
   const [currentPrices] = useState({
@@ -120,128 +40,31 @@ const InvestmentDashboard = () => {
     'AD.AS': 4.9
   });
 
-  // Form states
-  const [newTransaction, setNewTransaction] = useState({
-    symbol: '',
-    type: 'BUY',
-    shares: '',
-    price: '',
-    date: new Date().toISOString().split('T')[0],
-    fees: ''
-  });
+  // Show loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading investment data...</p>
+        </div>
+      </div>
+    );
+  }
 
-  const [newDcaPlan, setNewDcaPlan] = useState({
-    symbol: '',
-    amount: '',
-    frequency: 'monthly',
-    nextDate: new Date().toISOString().split('T')[0]
-  });
+  // Show error state
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 mb-4">Error loading data: {error}</p>
+          <p className="text-gray-600">Using default example data instead.</p>
+        </div>
+      </div>
+    );
+  }
 
-  const [newDividend, setNewDividend] = useState({
-    symbol: '',
-    amount: '',
-    date: new Date().toISOString().split('T')[0],
-    type: 'dividend'
-  });
-
-  // Add transaction
-  const addTransaction = () => {
-    if (!newTransaction.symbol || !newTransaction.shares || !newTransaction.price) return;
-
-    const transaction = {
-      id: Date.now(),
-      ...newTransaction,
-      shares: parseFloat(newTransaction.shares),
-      price: parseFloat(newTransaction.price),
-      fees: parseFloat(newTransaction.fees) || 0,
-      total: parseFloat(newTransaction.shares) * parseFloat(newTransaction.price) + (parseFloat(newTransaction.fees) || 0)
-    };
-
-    setTransactions([...transactions, transaction]);
-    setNewTransaction({
-      symbol: '',
-      type: 'BUY',
-      shares: '',
-      price: '',
-      date: new Date().toISOString().split('T')[0],
-      fees: ''
-    });
-  };
-
-  // Export transactions data
-  const exportData = () => {
-    const data = {
-      transactions
-    };
-    const dataStr = JSON.stringify(data, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(dataBlob);
-
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `investment_data_${new Date().toISOString().split('T')[0]}.json`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  };
-
-  // Import transaction 
-  const importData = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        try {
-          const data = JSON.parse(e.target.result);
-          if (data.transactions) setTransactions(data.transactions);
-        } catch (error) {
-          alert('Error importing data. Please check the file format.');
-        }
-      };
-      reader.readAsText(file);
-    }
-  };
-
-  // Add DCA plan
-  const addDcaPlan = () => {
-    if (!newDcaPlan.symbol || !newDcaPlan.amount) return;
-
-    const plan = {
-      id: Date.now(),
-      ...newDcaPlan,
-      amount: parseFloat(newDcaPlan.amount)
-    };
-
-    setDcaPlans([...dcaPlans, plan]);
-    setNewDcaPlan({
-      symbol: '',
-      amount: '',
-      frequency: 'monthly',
-      nextDate: new Date().toISOString().split('T')[0]
-    });
-  };
-
-  // Add dividend
-  const addDividend = () => {
-    if (!newDividend.symbol || !newDividend.amount) return;
-
-    const dividend = {
-      id: Date.now(),
-      ...newDividend,
-      amount: parseFloat(newDividend.amount)
-    };
-
-    setDividends([...dividends, dividend]);
-    setNewDividend({
-      symbol: '',
-      amount: '',
-      date: new Date().toISOString().split('T')[0],
-      type: 'dividend'
-    });
-  };
-
-  // Calculate portfolio summary with performance
+  // Rest of your existing functions remain the same...
   const getPortfolioSummary = () => {
     const positions = {};
 
@@ -284,7 +107,6 @@ const InvestmentDashboard = () => {
     });
   };
 
-  // Calculate DCA budget allocation
   const getDcaBudgetAllocation = () => {
     const totalDcaAmount = dcaPlans.reduce((sum, plan) => sum + plan.amount, 0);
     const remainingBudget = monthlyBudget - totalDcaAmount;
@@ -296,7 +118,6 @@ const InvestmentDashboard = () => {
     };
   };
 
-  // Get portfolio performance data for charts
   const getPortfolioPerformanceData = () => {
     const portfolio = getPortfolioSummary();
     const totalInvested = portfolio.reduce((sum, pos) => sum + pos.totalCost, 0);
@@ -314,7 +135,6 @@ const InvestmentDashboard = () => {
     };
   };
 
-  // Pie chart data for allocation
   const getPieChartData = () => {
     const portfolio = getPortfolioSummary();
     const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4', '#84CC16'];
@@ -326,7 +146,6 @@ const InvestmentDashboard = () => {
     }));
   };
 
-  // Performance timeline data
   const getPerformanceTimelineData = () => {
     const sortedTransactions = [...transactions].sort((a, b) => new Date(a.date) - new Date(b.date));
     let runningValue = 0;
@@ -346,7 +165,6 @@ const InvestmentDashboard = () => {
   const performanceData = getPortfolioPerformanceData();
   const pieChartData = getPieChartData();
   const timelineData = getPerformanceTimelineData();
-
 
   return (
     <div className="min-h-screen bg-gray-50 p-6 borderRadius-lg">
@@ -381,6 +199,7 @@ const InvestmentDashboard = () => {
           </nav>
         </div>
 
+        {/* Render Pages */}
         {activeTab === 'portfolio' && (
           <PortfolioPage
             performanceData={performanceData}
@@ -420,7 +239,6 @@ const InvestmentDashboard = () => {
             budgetAllocation={budgetAllocation}
           />
         )}
-
       </div>
     </div>
   );
