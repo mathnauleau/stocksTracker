@@ -42,9 +42,15 @@ npm create vite@latest my-project -- --template react-ts
 
 In the terminal, run:
 
+#### Development mode (auto-restart on changes)
 ```bash
 npm run dev
 ```
+
+#### Production mode
+```bash
+npm start
+````
 
 ### 5. Relink all dependencies
 

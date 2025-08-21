@@ -67,3 +67,26 @@ export default tseslint.config([
   },
 ])
 ```
+
+## Project hierarchy
+
+```
+stocksTracker/
+├── src/                 # Your existing React app
+├── backend/            # New backend folder
+│   ├── src/
+│   │   ├── database/
+│   │   │   ├── database.js
+│   │   │   └── init.sql
+│   │   ├── routes/
+│   │   │   ├── portfolio.js
+│   │   │   └── stocks.js
+│   │   ├── models/
+│   │   │   ├── Portfolio.js
+│   │   │   └── Stock.js
+│   │   └── server.js
+│   ├── package.json
+│   └── stocks.db        # SQLite database file (created automatically)
+├── package.json         # Your existing React package.json
+└── README.md
+```
