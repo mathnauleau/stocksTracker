@@ -67,7 +67,8 @@ const TransactionsPage: React.FC<TransactionsPageProps> = ({
     // Export transactions data
     const exportData = () => {
         const data = {
-            transactions
+            transactions,
+            exportDate: new Date().toISOString()
         };
         const dataStr = JSON.stringify(data, null, 2);
         const dataBlob = new Blob([dataStr], { type: 'application/json' });
@@ -83,13 +84,13 @@ const TransactionsPage: React.FC<TransactionsPageProps> = ({
     };
 
     // Import transaction 
-    const importData = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0];
+    const importData = (event) => {
+        const file = event.target.files[0];
         if (file) {
             const reader = new FileReader();
             reader.onload = (e) => {
                 try {
-                    const data = JSON.parse(e.target?.result as string);
+                    const data = JSON.parse(e.target.result);
                     if (data.transactions) setTransactions(data.transactions);
                 } catch (error) {
                     alert('Error importing data. Please check the file format.');
