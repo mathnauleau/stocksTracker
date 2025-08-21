@@ -24,11 +24,15 @@ interface NewTransaction {
 interface TransactionsPageProps {
     transactions: Transaction[];
     setTransactions: React.Dispatch<React.SetStateAction<Transaction[]>>;
+    addTransaction: (transaction: Omit<Transaction, 'id'>) => Promise<boolean>;
+    deleteTransaction: (id: number) => Promise<boolean>;
 }
 
 const TransactionsPage: React.FC<TransactionsPageProps> = ({
     transactions,
-    setTransactions
+    setTransactions,
+    addTransaction,
+    deleteTransaction
 }) => {
     // Form state
     const [newTransaction, setNewTransaction] = useState<NewTransaction>({
@@ -40,28 +44,58 @@ const TransactionsPage: React.FC<TransactionsPageProps> = ({
         fees: ''
     });
 
-    // Add transaction
-    const addTransaction = () => {
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    // Add transaction using backend
+    const handleAddTransaction = async () => {
         if (!newTransaction.symbol || !newTransaction.shares || !newTransaction.price) return;
 
-        const transaction: Transaction = {
-            id: Date.now(),
-            ...newTransaction,
-            shares: parseFloat(newTransaction.shares),
-            price: parseFloat(newTransaction.price),
-            fees: parseFloat(newTransaction.fees) || 0,
-            total: parseFloat(newTransaction.shares) * parseFloat(newTransaction.price) + (parseFloat(newTransaction.fees) || 0)
-        };
+        setIsSubmitting(true);
 
-        setTransactions([...transactions, transaction]);
-        setNewTransaction({
-            symbol: '',
-            type: 'BUY',
-            shares: '',
-            price: '',
-            date: new Date().toISOString().split('T')[0],
-            fees: ''
-        });
+        try {
+            const transaction = {
+                ...newTransaction,
+                shares: parseFloat(newTransaction.shares),
+                price: parseFloat(newTransaction.price),
+                fees: parseFloat(newTransaction.fees) || 0,
+                total: parseFloat(newTransaction.shares) * parseFloat(newTransaction.price) + (parseFloat(newTransaction.fees) || 0)
+            };
+
+            const success = await addTransaction(transaction);
+
+            if (success) {
+                setNewTransaction({
+                    symbol: '',
+                    type: 'BUY',
+                    shares: '',
+                    price: '',
+                    date: new Date().toISOString().split('T')[0],
+                    fees: ''
+                });
+            } else {
+                alert('Failed to add transaction. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error adding transaction:', error);
+            alert('Failed to add transaction. Please try again.');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    // Delete transaction using backend
+    const handleDeleteTransaction = async (id: number) => {
+        if (!confirm('Are you sure you want to delete this transaction?')) return;
+
+        try {
+            const success = await deleteTransaction(id);
+            if (!success) {
+                alert('Failed to delete transaction. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error deleting transaction:', error);
+            alert('Failed to delete transaction. Please try again.');
+        }
     };
 
     // Export transactions data
@@ -83,15 +117,22 @@ const TransactionsPage: React.FC<TransactionsPageProps> = ({
         URL.revokeObjectURL(url);
     };
 
-    // Import transaction 
+    // Import transaction data
     const importData = (event) => {
         const file = event.target.files[0];
         if (file) {
             const reader = new FileReader();
-            reader.onload = (e) => {
+            reader.onload = async (e) => {
                 try {
-                    const data = JSON.parse(e.target.result);
-                    if (data.transactions) setTransactions(data.transactions);
+                    const data = JSON.parse(e.target.result as string);
+                    if (data.transactions) {
+                        // Import each transaction through the backend
+                        for (const transaction of data.transactions) {
+                            const { id, ...transactionData } = transaction; // Remove ID to let backend assign new one
+                            await addTransaction(transactionData);
+                        }
+                        alert('Transactions imported successfully!');
+                    }
                 } catch (error) {
                     alert('Error importing data. Please check the file format.');
                 }
@@ -112,11 +153,13 @@ const TransactionsPage: React.FC<TransactionsPageProps> = ({
                         value={newTransaction.symbol}
                         onChange={(e) => setNewTransaction({ ...newTransaction, symbol: e.target.value.toUpperCase() })}
                         className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        disabled={isSubmitting}
                     />
                     <select
                         value={newTransaction.type}
                         onChange={(e) => setNewTransaction({ ...newTransaction, type: e.target.value as 'BUY' | 'SELL' })}
                         className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        disabled={isSubmitting}
                     >
                         <option value="BUY">Buy</option>
                         <option value="SELL">Sell</option>
@@ -128,6 +171,7 @@ const TransactionsPage: React.FC<TransactionsPageProps> = ({
                         value={newTransaction.shares}
                         onChange={(e) => setNewTransaction({ ...newTransaction, shares: e.target.value })}
                         className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        disabled={isSubmitting}
                     />
                     <input
                         type="number"
@@ -136,12 +180,14 @@ const TransactionsPage: React.FC<TransactionsPageProps> = ({
                         value={newTransaction.price}
                         onChange={(e) => setNewTransaction({ ...newTransaction, price: e.target.value })}
                         className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        disabled={isSubmitting}
                     />
                     <input
                         type="date"
                         value={newTransaction.date}
                         onChange={(e) => setNewTransaction({ ...newTransaction, date: e.target.value })}
                         className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        disabled={isSubmitting}
                     />
                     <input
                         type="number"
@@ -150,14 +196,19 @@ const TransactionsPage: React.FC<TransactionsPageProps> = ({
                         value={newTransaction.fees}
                         onChange={(e) => setNewTransaction({ ...newTransaction, fees: e.target.value })}
                         className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        disabled={isSubmitting}
                     />
                 </div>
                 <button
-                    onClick={addTransaction}
-                    className="mt-4 flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    onClick={handleAddTransaction}
+                    disabled={isSubmitting}
+                    className={`mt-4 flex items-center gap-2 px-4 py-2 text-white rounded-lg transition-colors ${isSubmitting
+                        ? 'bg-gray-400 cursor-not-allowed'
+                        : 'bg-blue-600 hover:bg-blue-700'
+                        }`}
                 >
                     <PlusCircle size={16} />
-                    Add Transaction
+                    {isSubmitting ? 'Adding...' : 'Add Transaction'}
                 </button>
             </div>
 
@@ -211,7 +262,7 @@ const TransactionsPage: React.FC<TransactionsPageProps> = ({
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-left">
                                         <button
-                                            onClick={() => setTransactions(transactions.filter(t => t.id !== transaction.id))}
+                                            onClick={() => handleDeleteTransaction(transaction.id)}
                                             className="text-red-600 hover:text-red-800"
                                         >
                                             <Trash2 size={16} />
