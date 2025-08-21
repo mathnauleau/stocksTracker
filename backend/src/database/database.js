@@ -8,7 +8,7 @@ const DB_PATH = path.join(__dirname, '../../stocks.db');
 // Create database connection
 const db = new sqlite3.Database(DB_PATH, (err) => {
     if (err) {
-        console.error('Error opening database:', err.message);
+        console.error('Error opening database:', err.message);````
     } else {
         console.log('Connected to SQLite database at:', DB_PATH);
         initializeDatabase();

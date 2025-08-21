@@ -71,22 +71,25 @@ export default tseslint.config([
 ## Project hierarchy
 
 ```
-stocksTracker/
-├── src/                 # Your existing React app
-├── backend/            # New backend folder
+your-stocks-tracker/
+├── src/                              # Your existing React app
+│   ├── hooks/
+│   │   ├── useDataLoader.ts          # Keep this (backup)
+│   │   └── useBackendDataLoader.ts   # NEW - Add this
+│   ├── services/
+│   │   └── api.ts                  # NEW - Add this (optional, advanced usage)
+│   └── App.tsx                     # Update this
+├── backend/                        # NEW - Create this entire folder
 │   ├── src/
 │   │   ├── database/
 │   │   │   ├── database.js
 │   │   │   └── init.sql
 │   │   ├── routes/
 │   │   │   ├── portfolio.js
-│   │   │   └── stocks.js
-│   │   ├── models/
-│   │   │   ├── Portfolio.js
-│   │   │   └── Stock.js
+│   │   │   ├── stocks.js
+│   │   │   └── userData.js
 │   │   └── server.js
 │   ├── package.json
-│   └── stocks.db        # SQLite database file (created automatically)
-├── package.json         # Your existing React package.json
-└── README.md
+│   └── stocks.db                   # Created automatically
+└── package.json                    # Your existing React package.json
 ```

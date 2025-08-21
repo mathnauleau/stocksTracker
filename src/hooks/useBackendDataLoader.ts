@@ -43,7 +43,11 @@ interface UserData {
 // API helper function
 async function apiCall<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   try {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    const url = `${API_BASE_URL}${endpoint}`;
+    console.log('Making API call to:', url);
+    console.log('Options:', options);
+    
+    const response = await fetch(url, {
       headers: {
         'Content-Type': 'application/json',
         ...options.headers,
@@ -51,11 +55,17 @@ async function apiCall<T>(endpoint: string, options: RequestInit = {}): Promise<
       ...options,
     });
 
+    console.log('Response status:', response.status);
+    console.log('Response ok:', response.ok);
+
     if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Response error:', errorText);
       throw new Error(`API request failed: ${response.statusText}`);
     }
 
     const data = await response.json();
+    console.log('Response data:', data);
     return data.data || data;
   } catch (error) {
     console.error('API Error:', error);
