@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { TrendingUp, DollarSign, Calendar, BarChart3, Gift } from 'lucide-react';
 
 import Button from './components/button.tsx';
-import useDataLoader from './hooks/useDataLoader';
+// Import your updated data hook
+import useBackendDataLoader from './hooks/useBackendDataLoader';
 
 // Import your page components
 import PortfolioPage from './pages/PortfolioPage';
@@ -43,7 +44,7 @@ const InvestmentDashboard = () => {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  // Use the data loader hook instead of hardcoded state
+  // Use the new backend data loader hook
   const {
     transactions,
     setTransactions,
@@ -54,10 +55,18 @@ const InvestmentDashboard = () => {
     monthlyBudget,
     setMonthlyBudget,
     isLoading,
-    error
-  } = useDataLoader();
+    error,
+    // New backend-specific functions
+    addTransaction,
+    updateTransaction,
+    deleteTransaction,
+    addDividend,
+    deleteDividend,
+    addDcaPlan,
+    deleteDcaPlan
+  } = useBackendDataLoader();
 
-  // Current prices for performance calculation (simulated)
+  // Current prices for performance calculation (simulated - you can later integrate with real API)
   const [currentPrices] = useState({
     'ALO': 4.2,
     'VWCG': 15.5,
@@ -84,13 +93,13 @@ const InvestmentDashboard = () => {
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <p className="text-red-600 mb-4">Error loading data: {error}</p>
-          <p className="text-gray-600">Using default example data instead.</p>
+          <p className="text-gray-600">Please check if the backend server is running on port 3001.</p>
         </div>
       </div>
     );
   }
 
-  // Rest of your existing functions remain the same...
+  // Your existing calculation functions remain the same
   const getPortfolioSummary = () => {
     const positions = {};
 
@@ -225,7 +234,7 @@ const InvestmentDashboard = () => {
           </nav>
         </div>
 
-        {/* Render Pages */}
+        {/* Render Pages - now with backend functions */}
         {activeTab === 'portfolio' && (
           <PortfolioPage
             performanceData={performanceData}
@@ -246,6 +255,8 @@ const InvestmentDashboard = () => {
           <TransactionsPage
             transactions={transactions}
             setTransactions={setTransactions}
+            addTransaction={addTransaction}
+            deleteTransaction={deleteTransaction}
           />
         )}
 
@@ -253,6 +264,8 @@ const InvestmentDashboard = () => {
           <DividendsPage
             dividends={dividends}
             setDividends={setDividends}
+            addDividend={addDividend}
+            deleteDividend={deleteDividend}
           />
         )}
 
@@ -263,10 +276,12 @@ const InvestmentDashboard = () => {
             monthlyBudget={monthlyBudget}
             setMonthlyBudget={setMonthlyBudget}
             budgetAllocation={budgetAllocation}
+            addDcaPlan={addDcaPlan}
+            deleteDcaPlan={deleteDcaPlan}
           />
         )}
       </div>
-    </div >
+    </div>
   );
 };
 
