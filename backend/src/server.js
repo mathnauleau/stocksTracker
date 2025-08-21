@@ -5,6 +5,7 @@ require('dotenv').config();
 // Import routes
 const portfolioRoutes = require('./routes/portfolio');
 const stocksRoutes = require('./routes/stocks');
+const userDataRoutes = require('./routes/userData');
 
 // Create Express app
 const app = express();
@@ -28,6 +29,7 @@ app.use((req, res, next) => {
 // Routes
 app.use('/api/portfolio', portfolioRoutes);
 app.use('/api/stocks', stocksRoutes);
+app.use('/api/user-data', userDataRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
@@ -46,7 +48,8 @@ app.get('/', (req, res) => {
         endpoints: {
             health: '/api/health',
             portfolio: '/api/portfolio',
-            stocks: '/api/stocks'
+            stocks: '/api/stocks',
+            userData: '/api/user-data'
         }
     });
 });
@@ -73,6 +76,7 @@ app.listen(PORT, () => {
     console.log(`🚀 Stocks Tracker API server running on http://localhost:${PORT}`);
     console.log(`📊 Portfolio API: http://localhost:${PORT}/api/portfolio`);
     console.log(`📈 Stocks API: http://localhost:${PORT}/api/stocks`);
+    console.log(`👤 User Data API: http://localhost:${PORT}/api/user-data`);
     console.log(`❤️  Health Check: http://localhost:${PORT}/api/health`);
 });
 
